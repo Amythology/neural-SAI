@@ -5,35 +5,36 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS 
 from transformers import pipeline
 
-# 1. CRITICAL RENDER RAM FIX: Force single-threaded execution before loading anything
+# 1. ENFORCE STRICT MEMORY CONSTRAINTS
 torch.set_num_threads(1)
+if hasattr(torch, 'set_num_interop_threads'):
+    torch.set_num_interop_threads(1)
 
 app = Flask(__name__)
 CORS(app)
 
-print("Initializing Deep Emotion pipeline with strict memory controls...")
+print("Loading ultra-lightweight DistilBERT Emotion engine...")
 
-# 2. OPTIMIZED MODEL LOADING: Prevent RAM duplication
+# 2. LOAD COMPACT 255MB TRANSFORMER 
 emotion_model = pipeline(
     "text-classification", 
-    model="j-hartmann/emotion-english-distilroberta-base", 
+    model="bhadresh-savani/distilbert-base-uncased-emotion", 
     top_k=None,
-    low_cpu_mem_usage=True  # Slashes startup RAM spike in half
+    low_cpu_mem_usage=True
 )
 
-# 3. GARBAGE COLLECTION: Clean up RAM cache instantly
+# 3. IMMEDIATE PURGE OF SYSTEM CACHE
 gc.collect()
+print("Circumplex Engine Online. RAM footprint minimized.")
 
-print("Circumplex Engine Online within memory safety limits.")
-
+# Map DistilBERT emotion labels to Valence/Arousal coordinates [-1.0 to 1.0]
 EMOTION_COORDS = {
     'joy': (0.8, 0.4),
+    'love': (0.8, -0.2),      # Pleasant, low-intensity/calm energy
+    'surprise': (0.4, 0.9),   # High energy, slightly positive valence
     'anger': (-0.7, 0.8),
     'fear': (-0.6, 0.8),
-    'sadness': (-0.8, -0.6),
-    'surprise': (0.4, 0.9),
-    'disgust': (-0.8, 0.4),
-    'neutral': (0.0, 0.0)
+    'sadness': (-0.8, -0.6)
 }
 
 @app.route('/analyze', methods=['POST'])
@@ -53,12 +54,15 @@ def analyze():
         top_emotion = results[0]['label']
         top_score = results[0]['score']
 
+        # Calculate coordinates using weights from the lighter DistilBERT array
         for res in results:
-            label = res['label']
+            label = res['label'].lower()
             score = res['score']
-            v, a = EMOTION_COORDS[label]
-            weighted_v += v * score
-            weighted_a += a * score
+            
+            if label in EMOTION_COORDS:
+                v, a = EMOTION_COORDS[label]
+                weighted_v += v * score
+                weighted_a += a * score
 
         return jsonify({
             "text": text,
