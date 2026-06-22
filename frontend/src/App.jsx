@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { Sun, Moon, Leaf, Mail, Briefcase, Code, Cpu, Sparkles, ArrowRight } from 'lucide-react';
+import { Sun, Moon, Leaf, Mail, Briefcase, Code, Cpu, Sparkles, ArrowRight, Compass, Activity } from 'lucide-react';
 import './App.css';
 
 // --- GLOBAL FOOTER COMPONENT ---
@@ -35,7 +35,7 @@ function Home() {
           <span className="title-dark">Welcome to</span> <span className="title-peach">Neural</span>
         </h1>
         <p className="body-text max-w-lg mx-auto">
-          An elegant exploration into the emotional resonance of language. Navigate to the AI tool to experience natural language processing in a refined, minimalist environment.
+          An elegant exploration into the emotional resonance of language. Navigate to the AI tool to experience multidimensional sentiment visualization.
         </p>
         <Link to="/ai" className="blush-button inline-block mt-30">
           Enter the Studio <ArrowRight size={16} className="ml-2" />
@@ -45,17 +45,17 @@ function Home() {
       <div className="info-grid mt-30">
         <div className="elegant-card p-40">
           <Cpu className="accent-green-icon mb-20" size={32} />
-          <h3 className="section-title">How It Works</h3>
+          <h3 className="section-title">The Circumplex Model</h3>
           <p className="body-text text-sm">
-            Neural utilizes a custom-trained Logistic Regression model powered by Word2Vec Twitter embeddings. By mapping sentences into a 25-dimensional mathematical space, it bypasses the limitations of traditional keyword counting to understand context, slang, and genuine emotional weight.
+            Moving beyond simple positive/negative tracking, Neural maps emotions onto a 2D plane using Russell's Circumplex Model. By calculating weighted averages of 7 base emotions, the AI plots your text based on its Valence (pleasantness) and Arousal (energy).
           </p>
         </div>
 
         <div className="elegant-card p-40">
           <Sparkles className="accent-peach-icon mb-20" size={32} />
-          <h3 className="section-title">The Horizon</h3>
+          <h3 className="section-title">Deep Learning Backend</h3>
           <p className="body-text text-sm">
-            We are continuously refining the architecture. Upcoming updates include a transition to a deep-learning Transformer (BERT) backend for full sequential context awareness, multilingual support, and real-time API webhooks for developers.
+            Powered by a state-of-the-art Transformer (RoBERTa) architecture, the engine processes language sequentially. This grants it the context awareness necessary to interpret nuance, sarcasm, and subtle psychological framing.
           </p>
         </div>
       </div>
@@ -63,21 +63,39 @@ function Home() {
   );
 }
 
-// --- PAGE: ABOUT ---
+// --- PAGE: ABOUT (EXPANDED TO DOCUMENT NEW FEATURES) ---
 function About() {
   return (
-    <div className="page fade-in">
+    <div className="page fade-in home-layout">
       <div className="elegant-card">
         <p className="subtitle">Our Philosophy</p>
         <h1 className="title mb-20">
           The <span className="title-green">Architecture</span>
         </h1>
         <p className="body-text mb-20">
-          This application bridges the gap between raw computational math and human emotion. Powered by a custom Python backend parsing thousands of data points, it interprets sentiment without losing the poetic nuance of human expression.
+          This application bridges the gap between raw computational math and human emotion. By mapping structural psychological vectors onto state-of-the-art deep learning algorithms, it interprets sentiment without losing the poetic nuance of human expression.
         </p>
         <p className="body-text">
-          Built with a lightweight Flask API and an interactive React frontend, it demonstrates the seamless integration of classic Machine Learning pipelines into modern web experiences.
+          Built with a lightweight Flask API, Hugging Face Transformers, and an interactive React frontend, it demonstrates the seamless integration of modern AI pipelines into beautiful, experiential web interfaces.
         </p>
+      </div>
+
+      <div className="info-grid">
+        <div className="elegant-card p-40">
+          <Compass className="accent-peach-icon mb-20" size={32} />
+          <h3 className="section-title">Valence & Arousal Mapping</h3>
+          <p className="body-text text-sm">
+            The mathematical plane is governed by James A. Russell’s psychological blueprint. The horizontal axis measures <strong>Valence</strong> (ranging from highly unpleasant cognitive states to blissful semantic constructs). The vertical axis tracks <strong>Arousal</strong>, capturing underlying somatic intensity and physiological activation levels.
+          </p>
+        </div>
+
+        <div className="elegant-card p-40">
+          <Activity className="accent-green-icon mb-20" size={32} />
+          <h3 className="section-title">RoBERTa Weighted Engines</h3>
+          <p className="body-text text-sm">
+            Instead of selecting just one label, our customized backend extracts structural probability coefficients from a fine-tuned deep neural classifier. By multiplying each emotion's preset vector coordinates by its contextual confidence score, the interface builds an aggregate cross-emotional spatial coordinate.
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -115,17 +133,18 @@ function AIPage() {
   };
 
   return (
-    <div className="page fade-in">
+    <div className="page fade-in home-layout">
+      {/* MAIN CARD: INPUT AND VERDICT */}
       <div className="elegant-card text-center">
-        <p className="subtitle">AI Analysis</p>
+        <p className="subtitle">Circumplex Engine</p>
         <h1 className="title">
-          <span className="title-peach">Neural</span> <span className="title-green">Sentiment</span>
+          <span className="title-peach">Neural</span> <span className="title-green">Mapping</span>
         </h1>
         <div className="divider"></div>
         <div className="input-group">
           <textarea
             className="editorial-input"
-            placeholder="Enter your thoughts here..."
+            placeholder="Type a sentence to visualize its emotional footprint..."
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => { 
@@ -136,26 +155,75 @@ function AIPage() {
             }}
           />
           <button className="blush-button" onClick={analyzeSentiment} disabled={loading || !text.trim()}>
-            {loading ? <span className="spinner"></span> : 'Analyze Text'}
+            {loading ? <span className="spinner"></span> : 'Plot Emotion'}
           </button>
         </div>
         
         {error && <div className="error-message">{error}</div>}
         
         {result && (
-          <div className={`result-box fade-in ${result.sentiment.toLowerCase()}`}>
-            <div className="result-header">
-              <h2>{result.sentiment}</h2>
+          <div className="result-box fade-in">
+            {/* FIRST: EMOTION COMES FIRST NOW */}
+            <div className="emotion-readout fade-in">
+              <h2>{result.primary_emotion}</h2>
+              <p>Network Confidence: {result.confidence}</p>
             </div>
-            <div className="confidence-container">
-              <div className="confidence-bar-bg">
-                <div className="confidence-bar-fill" style={{ width: result.confidence }}></div>
+
+            {/* SECOND: GRAPHICAL MAPPING SECONDS BELOW */}
+            <div className="circumplex-wrapper">
+              <div className="circumplex-grid">
+                <div className="x-axis"></div>
+                <div className="y-axis"></div>
+                <span className="axis-label top">High Energy</span>
+                <span className="axis-label bottom">Low Energy</span>
+                <span className="axis-label left">Unpleasant</span>
+                <span className="axis-label right">Pleasant</span>
+                
+                <div 
+                  className="circumplex-dot"
+                  style={{
+                    left: `${((result.valence + 1) / 2) * 100}%`,
+                    top: `${((1 - result.arousal) / 2) * 100}%`
+                  }}
+                ></div>
               </div>
-              <p className="confidence-text">Confidence: {result.confidence}</p>
             </div>
           </div>
         )}
       </div>
+
+      {/* SECONDARY LAYOUT ROW: SIDE-BY-SIDE ANALYTICAL METRICS */}
+      {result && (
+        <div className="info-grid fade-in">
+          {/* BOX 1: THE MAPPING MATRIX */}
+          <div className="elegant-card p-40">
+            <Compass className="accent-peach-icon mb-20" size={28} />
+            <h3 className="section-title">Coordinate Mapping</h3>
+            <div className="mt-30">
+              <div className="metric-row">
+                <span className="metric-label">Valence Axis (X)</span>
+                <span className="metric-value">{result.valence > 0 ? `+${result.valence}` : result.valence}</span>
+              </div>
+              <div className="metric-row">
+                <span className="metric-label">Arousal Axis (Y)</span>
+                <span className="metric-value">{result.arousal > 0 ? `+${result.arousal}` : result.arousal}</span>
+              </div>
+            </div>
+            <p className="body-text text-sm mt-30" style={{ fontSize: '13px' }}>
+              These spatial coordinates reflect the mathematical epicenter of your syntax. Positive valence signifies language associated with pleasure, while elevated arousal logs cognitive tension or somatic drive.
+            </p>
+          </div>
+
+          {/* BOX 2: EXTRA INFORMATION BLUEPRINT */}
+          <div className="elegant-card p-40">
+            <Activity className="accent-green-icon mb-20" size={28} />
+            <h3 className="section-title">Linguistic Dynamics</h3>
+            <p className="body-text text-sm mt-30" style={{ fontSize: '13px' }}>
+              Your input triggers a primary output of <strong>{result.primary_emotion}</strong>. Russell’s model suggests human feelings occupy a continuous topographic plane rather than isolated buckets. By using deep Transformer weights, the system measures structural patterns across an emotional continuum instead of looking up rigid keyword matches.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -173,11 +241,9 @@ function App() {
   return (
     <Router>
       <div className="app-container">
-        {/* Background ambient shapes */}
         <div className="bg-shape shape-1"></div>
         <div className="bg-shape shape-2"></div>
 
-        {/* Elegant Navigation Bar */}
         <nav className="navbar">
           <div className="nav-brand">
             <Leaf size={18} /> Neural
@@ -192,7 +258,6 @@ function App() {
           </div>
         </nav>
 
-        {/* Page Routing Area */}
         <div className="content-wrapper">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -201,7 +266,6 @@ function App() {
           </Routes>
         </div>
 
-        {/* Global Footer */}
         <Footer />
       </div>
     </Router>
