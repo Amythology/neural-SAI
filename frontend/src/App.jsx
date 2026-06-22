@@ -115,18 +115,24 @@ function AIPage() {
     setResult(null);
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/analyze', {
+      // 1. Updated URL to point to your live Render backend
+      const response = await fetch('https://neural-sai.onrender.com/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text }),
       });
       
-      if (!response.ok) throw new Error('Server error');
-      
       const data = await response.json();
+
+      // 2. Capture the exact error from the backend instead of a generic one
+      if (!response.ok) {
+        throw new Error(data.error || 'An unknown error occurred on the server.');
+      }
+      
       setResult(data);
     } catch (err) {
-      setError('Could not connect to the AI server. Is it running?');
+      // 3. Display the exact error to the user
+      setError(err.message);
     } finally {
       setLoading(false);
     }
