@@ -116,7 +116,7 @@ function AIPage() {
 
     try {
       // 1. Updated URL to point to the local VADER backend
-      const response = await fetch('http://127.0.0.1:5000/analyze', {
+      const response = await fetch('https://neural-sai.onrender.com/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text }),
