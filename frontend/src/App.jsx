@@ -47,15 +47,15 @@ function Home() {
           <Cpu className="accent-green-icon mb-20" size={32} />
           <h3 className="section-title">The Circumplex Model</h3>
           <p className="body-text text-sm">
-            Moving beyond simple positive/negative tracking, Neural maps emotions onto a 2D plane using Russell's Circumplex Model. By calculating weighted averages of 7 base emotions, the AI plots your text based on its Valence (pleasantness) and Arousal (energy).
+            Moving beyond simple positive/negative tracking, Neural maps emotions onto a 2D plane using Russell's Circumplex Model. By calculating structural heuristics, the engine plots your text based on its Valence (pleasantness) and Arousal (energy).
           </p>
         </div>
 
         <div className="elegant-card p-40">
           <Sparkles className="accent-peach-icon mb-20" size={32} />
-          <h3 className="section-title">Deep Learning Backend</h3>
+          <h3 className="section-title">Lexicon-Based Analytics</h3>
           <p className="body-text text-sm">
-            Powered by a state-of-the-art Transformer (RoBERTa) architecture, the engine processes language sequentially. This grants it the context awareness necessary to interpret nuance, sarcasm, and subtle psychological framing.
+            Powered by VADER (Valence Aware Dictionary and sEntiment Reasoner), the engine utilizes an ultra-fast, rule-based lexicon. It intelligently detects sentiment intensity, polarity, and context without the overhead of massive neural networks.
           </p>
         </div>
       </div>
@@ -63,7 +63,7 @@ function Home() {
   );
 }
 
-// --- PAGE: ABOUT (EXPANDED TO DOCUMENT NEW FEATURES) ---
+// --- PAGE: ABOUT ---
 function About() {
   return (
     <div className="page fade-in home-layout">
@@ -73,10 +73,10 @@ function About() {
           The <span className="title-green">Architecture</span>
         </h1>
         <p className="body-text mb-20">
-          This application bridges the gap between raw computational math and human emotion. By mapping structural psychological vectors onto state-of-the-art deep learning algorithms, it interprets sentiment without losing the poetic nuance of human expression.
+          This application bridges the gap between raw computational math and human emotion. By mapping structural psychological vectors onto highly optimized sentiment algorithms, it interprets syntax without losing the poetic nuance of expression.
         </p>
         <p className="body-text">
-          Built with a lightweight Flask API, Hugging Face Transformers, and an interactive React frontend, it demonstrates the seamless integration of modern AI pipelines into beautiful, experiential web interfaces.
+          Built with a lightweight Flask API, NLTK VADER heuristics, and an interactive React frontend, it demonstrates the seamless integration of blazing-fast NLP pipelines into beautiful, experiential web interfaces.
         </p>
       </div>
 
@@ -91,9 +91,9 @@ function About() {
 
         <div className="elegant-card p-40">
           <Activity className="accent-green-icon mb-20" size={32} />
-          <h3 className="section-title">RoBERTa Weighted Engines</h3>
+          <h3 className="section-title">VADER Rule-Based Engines</h3>
           <p className="body-text text-sm">
-            Instead of selecting just one label, our customized backend extracts structural probability coefficients from a fine-tuned deep neural classifier. By multiplying each emotion's preset vector coordinates by its contextual confidence score, the interface builds an aggregate cross-emotional spatial coordinate.
+            Instead of selecting just one label, our customized backend extracts structural probability coefficients from a lexicon. By mapping each sentiment's preset compound vector coordinates to its contextual intensity score, the interface builds an aggregate cross-emotional spatial coordinate.
           </p>
         </div>
       </div>
@@ -115,8 +115,8 @@ function AIPage() {
     setResult(null);
 
     try {
-      // 1. Updated URL to point to your live Render backend
-      const response = await fetch('https://neural-sai.onrender.com/analyze', {
+      // 1. Updated URL to point to the local VADER backend
+      const response = await fetch('http://127.0.0.1:5000/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text }),
@@ -124,14 +124,12 @@ function AIPage() {
       
       const data = await response.json();
 
-      // 2. Capture the exact error from the backend instead of a generic one
       if (!response.ok) {
         throw new Error(data.error || 'An unknown error occurred on the server.');
       }
       
       setResult(data);
     } catch (err) {
-      // 3. Display the exact error to the user
       setError(err.message);
     } finally {
       setLoading(false);
@@ -169,13 +167,11 @@ function AIPage() {
         
         {result && (
           <div className="result-box fade-in">
-            {/* FIRST: EMOTION COMES FIRST NOW */}
             <div className="emotion-readout fade-in">
               <h2>{result.primary_emotion}</h2>
               <p>Network Confidence: {result.confidence}</p>
             </div>
 
-            {/* SECOND: GRAPHICAL MAPPING SECONDS BELOW */}
             <div className="circumplex-wrapper">
               <div className="circumplex-grid">
                 <div className="x-axis"></div>
@@ -198,10 +194,9 @@ function AIPage() {
         )}
       </div>
 
-      {/* SECONDARY LAYOUT ROW: SIDE-BY-SIDE ANALYTICAL METRICS */}
+      {/* SECONDARY LAYOUT ROW */}
       {result && (
         <div className="info-grid fade-in">
-          {/* BOX 1: THE MAPPING MATRIX */}
           <div className="elegant-card p-40">
             <Compass className="accent-peach-icon mb-20" size={28} />
             <h3 className="section-title">Coordinate Mapping</h3>
@@ -216,16 +211,15 @@ function AIPage() {
               </div>
             </div>
             <p className="body-text text-sm mt-30" style={{ fontSize: '13px' }}>
-              These spatial coordinates reflect the mathematical epicenter of your syntax. Positive valence signifies language associated with pleasure, while elevated arousal logs cognitive tension or somatic drive.
+              These spatial coordinates reflect the mathematical epicenter of your syntax. Positive valence signifies language associated with pleasure, while elevated arousal logs somatic drive based on lexical intensity.
             </p>
           </div>
 
-          {/* BOX 2: EXTRA INFORMATION BLUEPRINT */}
           <div className="elegant-card p-40">
             <Activity className="accent-green-icon mb-20" size={28} />
             <h3 className="section-title">Linguistic Dynamics</h3>
             <p className="body-text text-sm mt-30" style={{ fontSize: '13px' }}>
-              Your input triggers a primary output of <strong>{result.primary_emotion}</strong>. Russell’s model suggests human feelings occupy a continuous topographic plane rather than isolated buckets. By using deep Transformer weights, the system measures structural patterns across an emotional continuum instead of looking up rigid keyword matches.
+              Your input triggers a primary output of <strong>{result.primary_emotion}</strong>. Russell’s model suggests human feelings occupy a continuous topographic plane rather than isolated buckets. By using heuristic compound scores, the system maps structural intensity across an emotional continuum.
             </p>
           </div>
         </div>
@@ -234,7 +228,6 @@ function AIPage() {
   );
 }
 
-// --- MAIN APP COMPONENT ---
 function App() {
   const [theme, setTheme] = useState('light');
 
